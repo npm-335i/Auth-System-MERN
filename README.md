@@ -12,7 +12,7 @@
 
 ## ✨ Preview
 
-- **Live Demo**: [https://auth-system-mern.vercel.app](https://auth-system-mern.vercel.app)
+- **Live Demo**: [https://auth-system-frontend-six.vercel.app/auth](https://auth-system-frontend-six.vercel.app/auth)
 
 A complete authentication solution with a stunning dark glass-morphic UI, built for security and user experience.
 
