@@ -19,6 +19,29 @@ export default function Navbar({ setAuthMode, isAuthenticated, onLogout }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const nav = document.querySelector(".nav");
+      if (nav && !nav.contains(event.target) && open) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
+
+  useEffect(() => {
+    const handleEsc = (event) => {
+      if (event.key === "Escape" && open) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleEsc);
+    return () => document.removeEventListener("keydown", handleEsc);
+  }, [open]);
+
   const handleLoginClick = (e) => {
     e.preventDefault();
     setOpen(false);
@@ -58,6 +81,11 @@ export default function Navbar({ setAuthMode, isAuthenticated, onLogout }) {
     }
   };
 
+  const toggleMenu = (e) => {
+    e.stopPropagation();
+    setOpen(!open);
+  };
+
   const navItems = [
     { label: "Dashboard", href: "/dashboard", show: isAuthenticated },
     { label: "Features", href: "#features" },
@@ -90,6 +118,11 @@ export default function Navbar({ setAuthMode, isAuthenticated, onLogout }) {
                     setOpen(false);
                     if (item.href === "/dashboard") {
                       navigate("/dashboard");
+                    } else if (item.href.startsWith("#")) {
+                      const element = document.querySelector(item.href);
+                      if (element) {
+                        element.scrollIntoView({ behavior: "smooth" });
+                      }
                     }
                   }}
                 >
@@ -103,31 +136,19 @@ export default function Navbar({ setAuthMode, isAuthenticated, onLogout }) {
           <div className="mobile-auth">
             {isAuthenticated ? (
               <>
-                <button
-                  className="btn primary"
-                  onClick={handleDashboardClick}
-                >
+                <button className="btn primary" onClick={handleDashboardClick}>
                   Dashboard
                 </button>
-                <button
-                  className="btn ghost"
-                  onClick={handleLogoutClick}
-                >
+                <button className="btn ghost" onClick={handleLogoutClick}>
                   Logout
                 </button>
               </>
             ) : (
               <>
-                <button
-                  className="btn ghost"
-                  onClick={handleLoginClick}
-                >
+                <button className="btn ghost" onClick={handleLoginClick}>
                   Login
                 </button>
-                <button
-                  className="btn primary"
-                  onClick={handleSignupClick}
-                >
+                <button className="btn primary" onClick={handleSignupClick}>
                   Sign Up
                 </button>
               </>
@@ -138,31 +159,19 @@ export default function Navbar({ setAuthMode, isAuthenticated, onLogout }) {
         <div className="auth">
           {isAuthenticated ? (
             <>
-              <button
-                className="btn ghost"
-                onClick={handleDashboardClick}
-              >
+              <button className="btn ghost" onClick={handleDashboardClick}>
                 Dashboard
               </button>
-              <button
-                className="btn primary"
-                onClick={handleLogoutClick}
-              >
+              <button className="btn primary" onClick={handleLogoutClick}>
                 Logout
               </button>
             </>
           ) : (
             <>
-              <button
-                className="btn ghost"
-                onClick={handleLoginClick}
-              >
+              <button className="btn ghost" onClick={handleLoginClick}>
                 Login
               </button>
-              <button
-                className="btn primary"
-                onClick={handleSignupClick}
-              >
+              <button className="btn primary" onClick={handleSignupClick}>
                 Sign Up
               </button>
             </>
@@ -171,8 +180,9 @@ export default function Navbar({ setAuthMode, isAuthenticated, onLogout }) {
 
         <button
           className={`burger ${open ? "open" : ""}`}
-          onClick={() => setOpen(!open)}
+          onClick={toggleMenu}
           aria-label="Toggle menu"
+          aria-expanded={open}
         >
           <span />
           <span />
